@@ -1,23 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+
+import Header from "./component/header";
+import Event from "./component/Event";
+import EventList from "./component/EventList";
+import Footer from "./component/footer";
+
+import "./App.css";
 
 function App() {
+  const [eventList, setEventList] = useState([]);
+  console.log(eventList);
+
+  const handleFilter = () => {
+    let filtered = eventList.filter((el) => {
+      return !el.complete;
+    });
+    setEventList(filtered);
+  };
+
+  const handleToggle = (id) => {
+    let mapped = eventList.map((el) => {
+      return el.id === Number(id)
+        ? { ...el, complete: !el.complete }
+        : { ...el };
+    });
+    setEventList(mapped);
+  };
+
+  const addTask = (userInput) => {
+    let copy = [...eventList];
+    copy = [
+      ...copy,
+      { id: eventList.length + 1, task: userInput, complete: false },
+    ];
+    // console.log(copy);
+    setEventList(copy);
+  };
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Header eventList={eventList} />
+      <Event addTask={addTask} />
+      <EventList
+        eventList={eventList}
+        handleToggle={handleToggle}
+        handleFilter={handleFilter}
+      />
+      <Footer />
     </div>
   );
 }
